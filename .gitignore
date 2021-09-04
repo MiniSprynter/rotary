@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # File types
-.pickle
-.pkl
+*.pickle
+*.pkl

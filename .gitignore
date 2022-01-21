@@ -131,3 +131,6 @@ dmypy.json
 # File types
 *.pickle
 *.pkl
+
+# Mac files
+.DS_Store

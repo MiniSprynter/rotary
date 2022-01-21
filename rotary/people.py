@@ -11,10 +11,12 @@ import datetime as dt
 
 
 class Person(object):
-    def __init__(self, name, surname, skills, role, frequency, absences=None):
-        if absences is None:
+    def __init__(self, name, surname, skills, role, frequency, absences=[]):
+        # Ensure absences is a list
+        if not absences:
             absences = []
 
+        # Save parameters
         self.name = name
         self.surname = surname
         self.skills = skills
@@ -22,39 +24,107 @@ class Person(object):
         self.frequency = frequency
         self.absences = absences
 
+        # Ensure data is valid
+        self._is_valid()
+
+        # Generate ID
         self.id_ = self._gen_id()
+
+    @staticmethod
+    def __valid_str(string):
+        if type(string) is not str:
+            raise TypeError("String must be of type 'str'")
+        elif not string:
+            raise ValueError("String must not be empty")
+
+    @staticmethod
+    def __valid_dict(dictionary):  # TODO: Check key and value data as well
+        if type(dictionary) is not dict:
+            raise TypeError("Dictionary must be of type 'dict'")
+        elif not dictionary.keys():
+            raise ValueError("Dictionary must not be empty")
+
+    @staticmethod
+    def __valid_num(number):
+        if not (type(number) is int or type(number) is float):
+            raise TypeError("Number must be of type 'int' or 'float'")
+        elif number < 0:
+            raise ValueError("Number must not be negative")
 
     def _gen_id(self):
         return (self.name + "_" + self.surname).lower()
 
-    def _is_valid(self):  # TODO
-        pass
+    @staticmethod
+    def __valid_list(list_):  # TODO: Check list contents
+        if type(list_) is not list:
+            raise TypeError("List must be of type 'list'")
+
+    def _is_valid(self):
+        # Check validity of string parameters
+        for string in [self.name, self.surname, self.role]:
+            self.__valid_str(string)
+
+        # Check validity of dictionary parameters
+        for dictionary in [self.skills]:
+            self.__valid_dict(dictionary)
+
+        # Check validity of numerical parameters
+        for number in [self.frequency]:
+            self.__valid_num(number)
+
+        # Check validity of list parameters
+        for list_ in [self.absences]:
+            self.__valid_list(list_)
 
     def change_name(self, name):
+        # Check name validity
+        self.__valid_str(name)
+
+        # Replace current name
         self.name = name
 
     def change_surname(self, surname):
+        # Check surname validity
+        self.__valid_str(surname)
+
+        # Replace current surname
         self.surname = surname
 
     def add_skills(self, skills):
+        # Ensure skills are valid
+        self.__valid_dict(skills)
+
+        # Add skills to dictionary
         for skill, score in skills.items():
             self.skills[skill] = score
 
     def remove_skills(self, skills):
+        # Ensure skills is a valid list
+        self.__valid_list(skills)
+
+        # Remove skills from dictionary
         for skill in skills:
             self.skills.pop(skill, None)
 
     def change_roll(self, role):
+        # Ensure role is a valid string
+        self.__valid_str(role)
+
+        # Replace existing role string
         self.role = role
 
     def change_frequency(self, frequency):
+        # Ensure frequency is a valid number
+        self.__valid_num(frequency)
+
+        # Replace existing frequency number
         self.frequency = frequency
 
-    def add_absences(self, absences):
+    def add_absences(self, absences):  # TODO: check validity
         for absence in absences:
             self.absences.append(absence)
 
-    def remove_absences(self, absences):
+    def remove_absences(self, absences):  # TODO: check validity
         for date in [x for x in absences if x in self.absences]:
             self.absences.remove(date)
 

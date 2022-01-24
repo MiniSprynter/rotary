@@ -43,7 +43,7 @@ class Person(object):
             raise TypeError("Dictionary must be of type 'dict'")
         elif not dictionary.keys():
             raise ValueError("Dictionary must not be empty")
-        elif not all([type(x) for x in dictionary.keys()] == str):
+        elif not all([type(x) == str for x in dictionary.keys()]):
             raise TypeError("Dictionary keys must be strings")
 
     @staticmethod
@@ -57,7 +57,7 @@ class Person(object):
     def __valid_absences(absences):
         if type(absences) is not list:
             raise TypeError("Absences must be of type 'list'")
-        elif not all([type(x) for x in absences] == dt.date):
+        elif not all([type(x) == dt.date for x in absences]):
             raise TypeError("Absences must be of type 'datetime.date'")
 
     def _is_valid(self):

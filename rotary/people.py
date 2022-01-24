@@ -38,26 +38,27 @@ class Person(object):
             raise ValueError("String must not be empty")
 
     @staticmethod
-    def __valid_dict(dictionary):  # TODO: Check key and value data as well
+    def __valid_dict(dictionary):
         if type(dictionary) is not dict:
             raise TypeError("Dictionary must be of type 'dict'")
         elif not dictionary.keys():
             raise ValueError("Dictionary must not be empty")
+        elif not all([type(x) for x in dictionary.keys()] == str):
+            raise TypeError("Dictionary keys must be strings")
 
     @staticmethod
-    def __valid_num(number):
+    def __valid_pos_num(number):
         if not (type(number) is int or type(number) is float):
             raise TypeError("Number must be of type 'int' or 'float'")
         elif number < 0:
             raise ValueError("Number must not be negative")
 
-    def _gen_id(self):
-        return (self.name + "_" + self.surname).lower()
-
     @staticmethod
-    def __valid_list(list_):  # TODO: Check list contents
-        if type(list_) is not list:
-            raise TypeError("List must be of type 'list'")
+    def __valid_absences(absences):
+        if type(absences) is not list:
+            raise TypeError("Absences must be of type 'list'")
+        elif not all([type(x) for x in absences] == dt.date):
+            raise TypeError("Absences must be of type 'datetime.date'")
 
     def _is_valid(self):
         # Check validity of string parameters
@@ -65,16 +66,16 @@ class Person(object):
             self.__valid_str(string)
 
         # Check validity of dictionary parameters
-        for dictionary in [self.skills]:
-            self.__valid_dict(dictionary)
+        self.__valid_dict(self.skills)
 
         # Check validity of numerical parameters
-        for number in [self.frequency]:
-            self.__valid_num(number)
+        self.__valid_pos_num(self.frequency)
 
-        # Check validity of list parameters
-        for list_ in [self.absences]:
-            self.__valid_list(list_)
+        # Check validity of absences list
+        self.__valid_absences(self.absences)
+
+    def _gen_id(self):
+        return (self.name + "_" + self.surname).lower()
 
     def change_name(self, name):
         # Check name validity

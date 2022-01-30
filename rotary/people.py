@@ -134,7 +134,7 @@ class Person(object):
 
 
 class People(object):
-    def __init__(self, people):
+    def __init__(self, people=[]):
         self.people = {}
 
         self.add(people)
@@ -142,32 +142,34 @@ class People(object):
     def _get_ids(self):
         return list(self.people.keys())
 
+    def _get_name(self, id_):
+        if id_ in self.people:
+            return self.people[id_].fullname()
+        else:
+            return None
+
     def add(self, people):
         # Ensure people objects are in a list
-        if type(people) is not list:  # TODO: remove and always use list?
+        if not isinstance(people, (list, tuple)):
             people = [people]
 
         # Add people individually
         for person in people:
-            self.people[person.id_] = person
+            # Ensure object type is valid
+            if type(person) is Person:
+                self.people[person.id_] = person
 
     def count(self):
         return len(self.people)
 
-    def get_name(self, id_):
-        return self.people[id_].fullname()
-
     def get_names(self, ids):
-        # Ensure IDs are in a list
-        if type(ids) is not list:
-            ids = [ids]
-
-        # Create list of full names
-        names = []
-        for id_ in ids:
-            names.append(self.people[id_].fullname())
-
-        return names
+        # Check whether ids is a list
+        if isinstance(ids, (list, tuple)):
+            # Return a list of names
+            return [self._get_name(id_) for id_ in ids]
+        else:
+            # Return a single name
+            return self._get_name(ids)
 
     def get_roles(self):
         roles = {}

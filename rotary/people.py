@@ -133,7 +133,7 @@ class Person(object):
         return self.name + " " + self.surname
 
 
-class People(object):
+class Group(object):
     def __init__(self, people=[]):
         self.people = {}
 
@@ -148,6 +148,14 @@ class People(object):
         else:
             return None
 
+    def join(self, group):
+        # Ensure type is valid
+        if type(group) is not Group:
+            raise TypeError("Group must be of type 'Group'")
+
+        # Combine dictionaries
+        self.people = {**self.people, **group.people}
+
     def add(self, people):
         # Ensure people objects are in a list
         if not isinstance(people, (list, tuple)):
@@ -158,6 +166,15 @@ class People(object):
             # Ensure object type is valid
             if type(person) is Person:
                 self.people[person.id_] = person
+            
+    def remove(self, ids):
+        # Ensure IDs are in a list
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+
+        # Remove people individually
+        for id_ in ids:
+            self.people.pop(id_, None)
 
     def count(self):
         return len(self.people)
@@ -172,25 +189,52 @@ class People(object):
             return self._get_name(ids)
 
     def get_roles(self):
+        # Create empty dictionary for items
         roles = {}
-        # Determine roles for each ID
-        for id_ in self._get_ids():
-            # Determine role
-            role = self.people[id_].role
-            if role in roles:
-                # Add ID to existing list
-                roles[role].append(id_)
-            elif role:
-                # Create new list with ID
-                roles[self.people[id_].role] = [id_]
 
+        # Iterate through each ID
+        for id_ in self._get_ids():
+            role = self.people[id_].role
+
+            # Add data to roles dictionary
+            if role in roles:
+                # Add ID to existing key value
+                roles[role].append(id_)
+            else:
+                # Create new key with ID as value
+                roles[role] = [id_]
+                
         return roles
+
+    def get_skills(self):
+        # Create empty dictionary for skills
+        skills = {}
+
+        # Iterate through each ID
+        for id_ in self._get_ids():
+            for key, value in self.people[id_].skills.items():
+                # Add data to skills dictionary
+                if key in skills:
+                    # Add dataset to existing skill
+                    skills[key][id_] = value
+                else:
+                    # Create skill with dataset
+                    skills[key] = {id_: value}
+
+        return skills
 
 
 if __name__ == "__main__":
     import data_tools
 
+    # Create some dummy data
     Tom = Person("Tom", "Endersby", {"guitar": 9, "drums": 6}, "leader", 3)
-    people = People([Tom])
+
+    # Test data
+    people = Group([Tom])
+    people.get_roles()
+    people.get_skills()
+
+    # Ensure data can be saved and read again
     data_tools.save(people, "people")
     people_saved = data_tools.load("people")

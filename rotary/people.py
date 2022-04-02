@@ -135,8 +135,10 @@ class Person(object):
 
 class Group(object):
     def __init__(self, people=[]):
+        # Save parameters
         self.people = {}
 
+        # Add people into group
         self.add(people)
 
     def _get_ids(self):

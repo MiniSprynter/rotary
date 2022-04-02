@@ -15,6 +15,11 @@ def gen_filepath(filename):
     return (data_dir / ("./" + filename + ".pickle")).resolve()
 
 
+def exist(filename):
+    filepath = gen_filepath(filename)
+    return filepath.exists()
+
+
 def save(data, filename):
     filepath = gen_filepath(filename)
     with open(filepath, "wb") as data_file:
